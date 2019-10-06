@@ -2,7 +2,9 @@ package com.shirajsayed.foodrecipe;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.shirajsayed.foodrecipe.model.Recipe;
 import com.shirajsayed.foodrecipe.requests.RecipeApi;
@@ -10,9 +12,11 @@ import com.shirajsayed.foodrecipe.requests.ServiceGenerator;
 import com.shirajsayed.foodrecipe.requests.reponses.RecipeResponse;
 import com.shirajsayed.foodrecipe.requests.reponses.RecipeSearchResponse;
 import com.shirajsayed.foodrecipe.utils.Constant;
+import com.shirajsayed.foodrecipe.viewmodels.RecipeListViewModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,16 +25,24 @@ import retrofit2.Response;
 public class RecipeListActivity extends BaseActivity {
     private static final String TAG = "RecipeListActivity";
 
+    private RecipeListViewModel mRecipeListViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_list);
 
-        findViewById(R.id.test_progress_bar).setOnClickListener(new View.OnClickListener() {
+        mRecipeListViewModel = ViewModelProviders.of(this).get(RecipeListViewModel.class);
+
+        subscribeObserver();
+
+    }
+
+    private void subscribeObserver() {
+        mRecipeListViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
             @Override
-            public void onClick(View view) {
-                //testRecipeSearchRequest();
-                testRecipeGetRequest();
+            public void onChanged(List<Recipe> recipes) {
+
             }
         });
     }
